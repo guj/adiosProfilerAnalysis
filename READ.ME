@@ -1,0 +1,116 @@
+###########################################################################################
+### ASSUMPTIONS:
+### -- json file from adios are expected to have one of "default" "joined" "flatten"   ####
+###    in the file name in order for  extract.sh to proceed
+###
+############################################################################################
+## generate out/flatten_secs_FixedMetaInfoGather and out/default_secs_FixedMetaInfoGather ##
+############################################################################################
+source ./extract.sh FixedMetaInfoGather  sampleJson/testMe_default sampleJson/testMe_flatten
+
+## find out bytes written
+source ./extract.sh transport_0.wbytes sampleJson/testMe_flatten sampleJson/testMe_default
+
+############################################################################################
+## short cut: extract all prop of interest: PP PDW, etc
+## use "all" in stead of PP etc.
+############################################################################################
+source ./extract.sh all sampleJson/testMe_flatten sampleJson/testMe_default
+
+
+
+############################################################################################
+##
+## plot values of FixedMetaInfoGather time for each rank  save to plots/dvf_ES_aggregate_info.png
+##
+############################################################################################
+python3 plotRanks.py default flatten --set plotPrefix=plots/dvf jsonAttr=ES_aggregate_info levelAxis=True
+
+############################################################################################
+## if the data pattern is only the first few ranks are busy, then find the first rank     ##
+##   that has less value than zeroIf, and do not display anything after this rank         ##
+############################################################################################
+python3 plotRanks.py default flatten --set plotPrefix=plots/dvf jsonAttr=PP zeroIf=0.01
+(treats anything less than 0.01 as 0 so we can see clearly the first few ranks)
+
+
+FixedMetaInfoGather can be replaced by other profile keywords:
+e.g.
+outs/default_nCalls_ES			outs/default_nCalls_ES_aggregate_info	outs/default_nCalls_PP
+outs/default_nCalls_ES_AWD		outs/default_nCalls_FixedMetaInfoGather
+
+source ./extract.sh ES sampleJson/testMe_default sampleJson/testMe_flatten
+source ./extract.sh ES_AWD sampleJson/testMe_default sampleJson/testMe_flatten
+source ./extract.sh PP sampleJson/testMe_default sampleJson/testMe_flatten
+source ./extract.sh ES_aggregate_info sampleJson/testMe_default sampleJson/testMe_flatten
+source ./extract.sh FixedMetaInfoGather sampleJson/testMe_default sampleJson/testMe_flatten
+
+
+
+############################################################################################
+## plot out comparison (if more than 2 types) and save figure 
+############################################################################################
+  python3 plotStack.py default flatten --set dataDir=outs whichRank=11 plotPrefix=plots/dvf 
+(get numbers of known json attrinutes like ES/PP/ etc from rank 11 and store to plots/dvf_rank_11.png)
+
+## three way comparison 
+python3 plotStack.py default joined flatten --set dataDir=outs whichRank=0 plotPrefix=plots/dfj
+
+############################################################################################
+## plot out comparison (if more than 2 types) of numCalls
+############################################################################################
+python3 plotCall.py default flatten --set plotPrefix=plots/dvf
+
+
+############################################################################################
+Example of relations in the profiler is here
+############################################################################################
+"InitAgg-ews_mus": 195,
+"InitAgg-ews":{"mus":195, "nCalls":1},
+
+"PP_mus": 4536219,
+"PP":{"mus":4536219, "nCalls":350},
+
+"ES_mus": 43429034,
+"ES":{"mus":43429034, "nCalls":51},
+
+    ES_close_mus": 3103,
+   "ES_close":{"mus":3103, "nCalls":51},
+
+   "ES_AWD_mus": 10677101,
+   "ES_AWD":{"mus":10677101, "nCalls":51},
+
+
+   #####################################################
+   ## ES_aggregate_info is default meta aggregation   ##
+   ## Two level is the other option. It  will have    ##
+   ## ES_meta1 & ES_meta2                             ##
+   #####################################################
+   "ES_aggregate_info_mus": 32711005,  
+   "ES_aggregate_info":{"mus":32711005, "nCalls":51},
+       "FixedMetaInfoGather_mus": 32685917,
+       "FixedMetaInfoGather":{"mus":32685917, "nCalls":51},
+
+       "SelectMetaInfoGather_mus": 2557,
+       "SelectMetaInfoGather":{"mus":2557, "nCalls":9},
+
+       "MetaInfoBcast_mus": 15307,
+       "MetaInfoBcast":{"mus":15307, "nCalls":51},"
+
+
+   "ES_gather_write_meta_mus": 36590,
+   "ES_gather_write_meta":{"mus":36590, "nCalls":51},
+
+      "ES_AGG1_mus": 1858,
+      "ES_AGG1":{"mus":1858, "nCalls":51},
+      
+      "ES_GatherMetadataBlocks_mus": 16861,
+      "ES_GatherMetadataBlocks":{"mus":16861, "nCalls":51},
+
+      "ES_write_metadata_mus": 9590,
+      "ES_write_metadata":{"mus":9590, "nCalls":51},
+
+            "MetadataBlockWrite_mus": 2022,
+            "MetadataBlockWrite":{"mus":2022, "nCalls":51},
+
+

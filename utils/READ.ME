@@ -1,0 +1,61 @@
+############################################################
+###  In this dir:
+###    - reportADIOS.sh
+###          report the _max_times of all ranks spend by the json profilers from the EWS runs.
+###              note it corrects the minor syntax conflicts on the spot
+###              time reported is _max_  (using the shell sort function)
+###          usage:
+###             "reportADIOSDetail.sh <your dir>" 
+###               see the next sec for dir structure
+###     
+###            
+###    - reportADIOSDetail_EWS.sh
+###          report the times spend by the json profilers from the EWS FLATTEN_FILE runs.
+###              note it corrects the minor syntax conflicts on the spot
+###              and it is a subset of the reportADIOS.sh
+###              time reported is _max_ AND _min_ (using the shell sort function)
+###          usage:
+###             "reportADIOSDetail_EWS.sh <your dir>"
+###               see the next sec for dir structure
+###     
+###    - reportWarpXProfiler.sh
+###          report the min/max/avg of the IO related attributes e.g. WriteToFile() etc
+###          usage:
+###             "reportWarpXProfiler.sh <your dir>"
+###               see the next sec for dir structure
+### 
+###    - reportWarpXProfilerTotal.sh
+###          report the total times from the amrex profiler output
+###          usage:
+###             "reportWarpXProfilerTotal.sh <your dir>"
+###               see the next sec for dir structure
+############################################################
+### The dir structure
+### - <name, I use job id>
+###   - <encoding>_<jobID>_[async]<ioType><numNodes>n
+###        - outs/
+###             - <jobOutput> ## e.g. warpx outputs
+###             - ....
+###        - jsons/
+###             - <ioType>
+###                 - <adiosProfile>
+###        - <whatever>
+###   - ...
+###   - ...
+### Example
+ls ../../../N128_joined/3040722/f_3040722_joined_128n/jsons/joined 
+joined_diag1_f_openpmd_000000.bp5_ews_rank	joined_diag1_f_openpmd_000001.bp5_tls_rank	joined_diag1_f_openpmd_000003.bp5_tls_rank
+joined_diag1_f_openpmd_000000.bp5_tls_rank	joined_diag1_f_openpmd_000002.bp5_tls_rank
+### - 3040722
+###    - f_3040722_joined_128
+###      - outs
+###          - output.joined_tls_rank
+###          - output.joined_ews_rank	
+###      - jsons/
+###          - joined/
+###              -  joined_diag1_f_openpmd_000000.bp5_tls_rank
+###              -  joined_diag1_f_openpmd_000001.bp5_tls_rank
+###              _ ...
+###    - f_3040722_default_128
+###       - ...
+############################################################

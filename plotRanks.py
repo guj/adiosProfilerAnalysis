@@ -35,7 +35,6 @@ def processFile(inputFile, ax, color, tag):
     if ("logScale" in parseMe.command_options):
         logScaleAxis = parseMe.command_options["logScale"]
 
-    print (logScaleAxis)
     if (len(logScaleAxis) == 0):
         ax.ticklabel_format(useOffset=False)
         
@@ -92,19 +91,18 @@ if __name__ == "__main__":
     
     #plt.title('Bar Plot of Two Columns')
     plt.legend()
+    plt.tight_layout()
     
     figName = parseMe.command_options[parseMe.TAGS["out"]]+"_"+jsonAttrStr
     figName = figName.replace('.', '_')
     parentDir=os.path.dirname(figName)
 
-    print (figName, parentDir)
     if ( (len(parentDir) == 0) or os.path.isdir(parentDir)):        
         plt.savefig(figName)
     else:
         print ("Missing directory! Can not save", parentDir)
         
     # Show plot
-    plt.tight_layout()
     plt.show()
 
         

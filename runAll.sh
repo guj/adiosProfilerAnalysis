@@ -12,8 +12,8 @@ type2=flatten
 
 python3 plotRanks.py ${type1} ${type2} --set plotPrefix=plots/dvf jsonAttr=ES
 python3 plotRanks.py ${type1} ${type2} --set plotPrefix=plots/dvf jsonAttr=ES_AWD
-python3 plotRanks.py ${type1} ${type2} --set plotPrefix=plots/dvf jsonAttr=ES_aggregate_info levelAxis=True
-python3 plotRanks.py ${type1} ${type2} --set plotPrefix=plots/dvf jsonAttr=FixedMetaInfoGather
+python3 plotRanks.py ${type1} ${type2} --set plotPrefix=plots/dvf jsonAttr=ES_aggregate_info levelAxis=True logScale=x
+python3 plotRanks.py ${type1} ${type2} --set plotPrefix=plots/dvf jsonAttr=FixedMetaInfoGather  levelAxis=True logScale=xy
 python3 plotRanks.py ${type1} ${type2} --set plotPrefix=plots/dvf jsonAttr=PDW
 python3 plotRanks.py ${type1} ${type2} --set plotPrefix=plots/dvf jsonAttr=PP zeroIf=0.01
 

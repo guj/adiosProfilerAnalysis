@@ -18,7 +18,17 @@ source ./extract.sh transport_0.wbytes sampleJson/testMe_flatten sampleJson/test
 source ./extract.sh all sampleJson/testMe_flatten sampleJson/testMe_default
 
 
-
+parseMe.py
+   supports argument options for the plot*py namely
+   <prog> <list of files> --set <list of key=value pairs>
+   -  accepts list of file types (default flatten joined)
+   -  have a fixed set of default key value pairs
+   -  extra ones that can be supplied:
+	- "whichKind" refers what the values represents, choices are sec/nCalls/MB
+	  as they depicts in filename <file types>_<sec/nCalls/MB>_<propertyName>
+	- "logScale"
+	   can be x or y or xy or empty string
+   
 ############################################################################################
 ##
 ## plot values of FixedMetaInfoGather time for each rank  save to plots/dvf_ES_aggregate_info.png

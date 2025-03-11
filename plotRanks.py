@@ -30,6 +30,21 @@ def processFile(inputFile, ax, color, tag):
     ax.tick_params(axis='y', labelcolor=color)
     ax.grid()
 
+    ## logscale and ticklabel_format cannot be present together. python error
+    logScaleAxis="";
+    if ("logScale" in parseMe.command_options):
+        logScaleAxis = parseMe.command_options["logScale"]
+
+    print (logScaleAxis)
+    if (len(logScaleAxis) == 0):
+        ax.ticklabel_format(useOffset=False)
+        
+    if ("x" in logScaleAxis):        
+        ax.set_xscale('log')
+
+    if ("y" in logScaleAxis):        
+        ax.set_yscale('log')
+
 if __name__ == "__main__": 
     print("Script name:", sys.argv[0])
     if len(sys.argv) == 1:
@@ -43,7 +58,6 @@ if __name__ == "__main__":
     elif (len(parseMe.args.ioTypes) == 2):
         ax2 = ax1.twinx()
         
-
     jsonAttrStr=parseMe.command_options[parseMe.TAGS["attr"]]
     whichKind = 'secs' ## or 'nCalls'or 'MB'
     if ("whichKind" in parseMe.command_options):
@@ -68,7 +82,6 @@ if __name__ == "__main__":
         bottom_ax2, top_ax2 = ax2.get_ylim()    
                
         levelUp = parseMe.command_options[parseMe.TAGS["level"]]
-
         #else:            
         #    if ( max(top_ax1, top_ax2)/min(top_ax1, top_ax2)  < 2):
         #        levelUp = true

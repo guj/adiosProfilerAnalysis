@@ -83,17 +83,16 @@ if __name__ == "__main__":
     figName += "_max" if whichRank < 0 else f"_rank_{whichRank}"
     figName += ".png"  # Add extension
     
-    print (figName)
     parentDir=os.path.dirname(figName)
-    
+
+    print (figName)    
     if (os.path.isdir(parentDir)):        
-        print (figName)
         plt.savefig(figName)
     else:
         print ("Missing directory! Can not save", parentDir)
         
     plt.tight_layout()    
-    plt.show()
+    #plt.show()
 
 
 

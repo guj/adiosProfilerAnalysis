@@ -73,13 +73,13 @@ if __name__ == "__main__":
     plotBars(ax1, ticklabels, summary)
     plt.legend()
     
-        # Show plot
+    # Show plot
     plt.tight_layout()
     figName = parseMe.command_options[parseMe.TAGS["out"]] +"_nCalls"
 
     print (figName)
     plt.savefig(figName)
-    plt.show()
+    #plt.show()
 
 
 

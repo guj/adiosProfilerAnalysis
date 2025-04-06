@@ -105,6 +105,6 @@ if __name__ == "__main__":
         print ("Missing directory! Can not save", parentDir)
         
     # Show plot
-    plt.show()
+    #plt.show()
 
         

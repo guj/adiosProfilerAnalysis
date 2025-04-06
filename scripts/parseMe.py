@@ -1,4 +1,5 @@
 import argparse, textwrap
+import os
 parser = argparse.ArgumentParser(description="ADIOS json file parser step 2 (step 1 is use compare.sh to collect properties from json)")
 
 TAGS={
@@ -32,7 +33,7 @@ for k in TAGS:
 parser.add_argument("--set",
                     metavar="key=value",
                     nargs='+',
-                    help="The names of accepted options: "  + helpWithDefaults
+                    help="Accepted options:\n"  + helpWithDefaults
                     )
 args = parser.parse_args()
 
@@ -41,13 +42,7 @@ args = parser.parse_args()
 
 def parse_var(s):
     """
-    Parse a key, value pair, separated by '='
-    That's the reverse of ShellArgs.
-
-    On the command line (argparse) a declaration will typically look like:
-        foo=hello
-    or
-        foo="hello world"
+    Parse a key, value pair, separated by '=' into a tuple
     """
     items = s.split('=')
     key = items[0].strip() # we remove blanks around keys, as is logical
@@ -79,12 +74,38 @@ for k in TAGS:
         
 if (not command_options[TAGS["input_dir"]].endswith("/")):
     command_options[TAGS["input_dir"]]+="/"
+if not os.path.isdir(command_options[TAGS["input_dir"]]):
+    parser.error(f"Input directory '{command_options[TAGS['input_dir']]}' does not exist")
 
+#command_options[TAGS["rank"]] = int(command_options[TAGS["rank"]])
+#command_options[TAGS["zero"]] = float(command_options[TAGS["zero"]])
+try:
+    command_options[TAGS["rank"]] = int(command_options[TAGS["rank"]])
+    if command_options[TAGS["rank"]] < 0:
+        parser.error(f"Rank ({command_options[TAGS['rank']]}) must be non-negative")
+except ValueError:
+    parser.error(f"Rank must be an integer, got '{command_options[TAGS['rank']]}'")
 
-print (command_options)    
-command_options[TAGS["rank"]] = int(command_options[TAGS["rank"]])
-command_options[TAGS["zero"]] = float(command_options[TAGS["zero"]])
+try:
+    command_options[TAGS["zero"]] = float(command_options[TAGS["zero"]])
+    if command_options[TAGS["zero"]] < 0:
+        parser.error(f"Zero threshold ({command_options[TAGS['zero']]}) must be non-negative")
+except ValueError:
+    parser.error(f"Zero threshold must be a number, got '{command_options[TAGS['zero']]}'")
 
-command_options[TAGS["level"]] = eval(command_options[TAGS["level"]])
+    
+# Safely convert levelAxis to boolean
+level_val = command_options[TAGS["level"]].lower()
+if level_val not in ("true", "false"):
+    parser.error(f"Level must be 'True' or 'False', got '{command_options[TAGS['level']]}'")
+command_options[TAGS["level"]] = level_val == "true"
+
+#command_options[TAGS["level"]] = eval(command_options[TAGS["level"]])
+
+#valid_keys = set(TAGS.values())
+#for key in command_options:
+#    if key not in valid_keys:
+#        parser.warn(f"Invalid option key: '{key}'. Valid keys are: {', '.join(valid_keys)}")
+####     allow extra options      ####
 
 print (command_options)

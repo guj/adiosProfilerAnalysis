@@ -4,26 +4,31 @@ import csv
 import sys
 import os
 import parseMe
-# Sample data
 
 
 def drawBars(ax, labels, summary, timeDesc):
-    ax.bar(labels, summary['ES'], 0.6, label='ES')
-    if (len(summary['PP']) > 0):
-        ax.bar(labels, summary['PP'], 0.6, bottom=summary['ES'],  label='PP')
-    if (len(summary['PDW']) > 0):
-        ax.bar(labels, summary['PDW'], 0.6, bottom=summary['ES'],  label='PDW')
-    ax.bar(labels, summary['ES_aggregate_info'], 0.4, label='ES_aggregation_info')
-    ax.bar(labels, summary['ES_AWD'], 0.4, bottom=summary['ES_aggregate_info'], label='ES_AWD')
-    ax.bar(labels, summary['FixedMetaInfoGather'], 0.2, label='ES_fixedMetaInfoGather')
-        
-    ax.set_ylabel('Secs')
-    ax.set_title('ADIOS Time:'+timeDesc)
+    """Draw stacked bar chart for ADIOS timing data."""
+    width = 0.6
+    bottom = np.zeros(len(labels))
     
+    # Stack bars for each keyword
+    for key in ['ES', 'PP', 'PDW']:
+        if summary[key]:  # Only plot if data exists
+            ax.bar(labels, summary[key], width, bottom=bottom, label=key)
+            bottom += np.array(summary[key])  # Update bottom for stacking
+    
+    # Separate bars for other metrics (not stacked)
+    ax.bar(labels, summary['ES_aggregate_info'], width/2, label='ES_aggregate_info')
+    ax.bar(labels, summary['ES_AWD'], width/2, bottom=summary['ES_aggregate_info'], label='ES_AWD')
+    ax.bar(labels, summary['FixedMetaInfoGather'], width/3, label='FixedMetaInfoGather')
+    
+    ax.set_ylabel('Seconds')
+    ax.set_title(f'ADIOS Time: {timeDesc}')
     ax.legend()
-
+    
     
 def summarizeFile(inputFile, whichRank=0):
+    """Read CSV file and return value for specified rank or max."""
     data = csv.reader(open(inputFile, 'r'), delimiter=",", quotechar='|')
     
     data1 = np.array([row[0] for row in data], dtype=float)
@@ -44,10 +49,10 @@ if __name__ == "__main__":
 
     keywords = ['PP', 'PDW', 'ES', 'ES_AWD', 'ES_aggregate_info', 'FixedMetaInfoGather']
     summary = {}
-    barLabels = []
     for key in keywords:
         summary[key]=[]
-        
+
+    barLabels = []        
     fig, ax1 = plt.subplots()
 
     print (parseMe.args.ioTypes)
@@ -71,20 +76,13 @@ if __name__ == "__main__":
         print ("Nothing to plot")
         sys.exit()
 
-    timeDesc="Rank "+str(whichRank)        
-    if (whichRank == -1):
-        timeDesc = "Max"
-    drawBars(ax1, barLabels, summary, timeDesc)
-    plt.legend()
+    timeDesc = "Max" if whichRank < 0 else f"Rank {whichRank}"
+    drawBars(ax1, barLabels, summary, timeDesc)    
+
+    figName = parseMe.command_options[parseMe.TAGS["out"]]
+    figName += "_max" if whichRank < 0 else f"_rank_{whichRank}"
+    figName += ".png"  # Add extension
     
-        # Show plot
-    plt.tight_layout()
-    figName = parseMe.command_options[parseMe.TAGS["out"]]  
-    if (whichRank < 0):    
-        figName += "_max";
-    else:
-        figName +="_rank_"+str(whichRank)
-        
     print (figName)
     parentDir=os.path.dirname(figName)
     
@@ -94,8 +92,7 @@ if __name__ == "__main__":
     else:
         print ("Missing directory! Can not save", parentDir)
         
-    
-    #plt.savefig(figName)
+    plt.tight_layout()    
     plt.show()
 
 

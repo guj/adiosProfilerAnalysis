@@ -4,7 +4,6 @@ import csv
 import sys, os
 import parseMe
 
-
 def processFile(inputFile, ax, color, tag):    
     data = csv.reader(open(inputFile, 'r'), delimiter=",", quotechar='|')
     
@@ -25,15 +24,10 @@ def processFile(inputFile, ax, color, tag):
         else:
             ax.plot(range(idx), data1[0:idx], '-x', color=color)
         ax.set_xticks(range(0, idx))
-        
+        print (data1[0:idx])
     ax.set_ylabel(tag, c=color)
     ax.tick_params(axis='y', labelcolor=color)
     ax.grid()
-
-    ## logscale and ticklabel_format cannot be present together. python error
-    logScaleAxis="";
-    if ("logScale" in parseMe.command_options):
-        logScaleAxis = parseMe.command_options["logScale"]
 
     if (len(logScaleAxis) == 0):
         ax.ticklabel_format(useOffset=False)
@@ -56,7 +50,12 @@ if __name__ == "__main__":
         sys.exit()
     elif (len(parseMe.args.ioTypes) == 2):
         ax2 = ax1.twinx()
-        
+ 
+    ## logscale and ticklabel_format cannot be present together. python error
+    logScaleAxis=""
+    if ("logScale" in parseMe.command_options):
+        logScaleAxis = parseMe.command_options["logScale"]
+       
     jsonAttrStr=parseMe.command_options[parseMe.TAGS["attr"]]
     whichKind = 'secs' ## or 'nCalls'or 'MB'
     if ("whichKind" in parseMe.command_options):
@@ -95,6 +94,9 @@ if __name__ == "__main__":
     
     figName = parseMe.command_options[parseMe.TAGS["out"]]+"_"+jsonAttrStr
     figName = figName.replace('.', '_')
+    if (len(logScaleAxis) > 0):
+        figName = figName +"_log_"+logScaleAxis
+        
     parentDir=os.path.dirname(figName)
 
     if ( (len(parentDir) == 0) or os.path.isdir(parentDir)):        

@@ -7,7 +7,7 @@
 ##     by default it plots times 0 1 2 3
 ##     if you need other times, change the iteration variable in this script
 ##     e.g. to run in this dir, plot for job data/37404600  using the scripts in ../
-##        source automate.sh data 37404600 ../
+##        source automate.sh data 37404600 ../ tls
 ###########################################################################
 ### process all jsons from data/ (data/<job1> data/<job2> ..)
 #source step0.sh data
@@ -32,7 +32,7 @@ runStep1()
     fi
 
     for i in "${iterations[@]}"; do
-        if ! source ./step1.sh "${scripts_home}/scripts/" "$dir" "$jobID" "$i"; then
+        if ! source ./step1.sh "${scripts_home}/scripts/" "$dir" "$jobID" "$i" "$aggType"; then
             echo "Warning: step1.sh failed for iteration $i"
 	    break
         fi
@@ -84,6 +84,12 @@ scripts_home="adiosProfilerAnalysis/"
 if [ "$#" -gt 2 ]; then
     scripts_home="$3"
 fi
+
+aggType=ews
+if [ "$#" -gt 3 ]; then
+    aggType="$4"
+fi
+
 
 if [ ! -d "$data_dir"/${job} ]; then
     echo "Invalid datadir ${data_dir}/${job}"

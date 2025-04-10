@@ -9,8 +9,8 @@
 ##     source <this_file> data 36820518 0
 ##     "purpose: extract all json attributes from dir=data/ + job id=36820518 + at_step=0"
 ##########################################################################################################
-if [ "$#" -ne 4 ]; then
-    echo "Error: 4 arguments required"
+if [ "$#" -lt 4 ]; then
+    echo "Error: 4+ arguments required"
     echo "Usage: $0 <scriptHome> <dataDir> <jobID> <timeStep>"
     exit 1
 fi
@@ -19,6 +19,11 @@ scriptsHome=$1
 dataDir=$2
 jobID=$3
 timeStep=$4
+
+aggType="ews"
+
+if  [ "$#" -eq 5 ]; then
+    aggType=$5
 
 # Validate timeStep is a number
 if ! [[ "$timeStep" =~ ^[0-9]+$ ]]; then
@@ -41,9 +46,9 @@ declare -a path1 path2 path3
 ## ls could have multiple outputs, e.g, asyncdefault, default both can be in one job
 ## so put results in an array 
 #####################
-path1=($(ls ${dataDir}/${jobID}/*${type1}_*/jsons/*/*${timeStep}.bp*ews*))
-path2=($(ls ${dataDir}/${jobID}/*${type2}_*/jsons/*/*${timeStep}.bp*ews*))
-path3=($(ls ${dataDir}/${jobID}/*${type3}_*/jsons/*/*${timeStep}.bp*ews*))
+path1=($(ls ${dataDir}/${jobID}/*${type1}_*/jsons/*/*${timeStep}.bp*${aggType}*))
+path2=($(ls ${dataDir}/${jobID}/*${type2}_*/jsons/*/*${timeStep}.bp*${aggType}*))
+path3=($(ls ${dataDir}/${jobID}/*${type3}_*/jsons/*/*${timeStep}.bp*${aggType}*))
 
 
 # Check if any paths were found

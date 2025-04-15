@@ -8,7 +8,7 @@
 # Validate input parameters
 if [ $# -ne 4 ]; then
     echo "Usage: $0 <jobID> <scriptsHome> <extractedFilesBase> <timeStep>"
-    exit 1
+    return 1
 fi
 
 jobID="$1"
@@ -17,10 +17,10 @@ timeStep="$4"
 extractedFilesLoc="$3/t${timeStep}"
 
 # Create directory structure
-mkdir -p "plots" || { echo "Error: Cannot create plots directory"; exit 1; }
-mkdir -p "plots/${jobID}" || { echo "Error: Cannot create plots/${jobID}"; exit 1; }
+mkdir -p "plots" || { echo "Error: Cannot create plots directory"; return 1; }
+mkdir -p "plots/${jobID}" || { echo "Error: Cannot create plots/${jobID}"; return 1; }
 currPlotDest="plots/${jobID}/t${timeStep}"
-mkdir -p "${currPlotDest}" || { echo "Error: Cannot create ${currPlotDest}"; exit 1; }
+mkdir -p "${currPlotDest}" || { echo "Error: Cannot create ${currPlotDest}"; return 1; }
 
 echo "==> Side by side comparison of PP PDW ES ES_AWD ES_aggregate_info FixedMetaInfoGather transport_0.wbytes"
 echo "    for default & flatten types (joined and default are pretty identical)"

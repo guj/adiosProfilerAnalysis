@@ -16,7 +16,7 @@
 for script in step1.sh step2.sh; do
     if [ ! -f "$script" ]; then
         echo "Error: Required script $script not found"
-        exit 1
+        return 1
     fi
 done
 ### extract json valutes from job id 36832543
@@ -61,14 +61,14 @@ runStep2()
 if [ "$#" -lt 2 ]; then
     echo "Error: This script requires 2+ arguments"
     echo "Usage: $0 <data_dir> <job_id> <script_home>(adiosProfilerAnalysis/scripts/)" 
-    exit 1
+    return 1
 fi
 
 # Check if arguments are not empty
 if [ -z "$1" ] || [ -z "$2" ]; then
     echo "Error: Arguments cannot be empty"
     echo "Usage: $0 <data_dir> <job_id>"
-    exit 1
+    return 1
 fi
 
 # Validate input
@@ -97,13 +97,13 @@ else
     if [ ! -d "${scripts_home}/scripts" ]; then
 	echo "Unable to find dir  ${scripts_home}/scripts "
     else
-	output_dir="all_outs"
+	output_dir="all_outs/${aggType}"
 
 	## optional, check ADIOS json file summary
 	#source ${scripts_home}/utils/reportADIOS.sh ${data_dir}	
 	echo "Extracting information from: $data_dir/$job scripts from ${scripts_home}/scripts"
-	runStep1 "$data_dir" "$job" || { echo "Error: Step 1 failed" ; exit 1 }					
-	runStep2 "$job" "$output_dir" || { echo "Error: Step 2 failed" ; exit 1 }
+	runStep1 "$data_dir" "$job" || { echo "Error: Step 1 failed" ; return 1 }
+	runStep2 "$job" "$output_dir" || { echo "Error: Step 2 failed" ; return 1 }
 	
     fi
 fi	

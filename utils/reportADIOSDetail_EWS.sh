@@ -1,8 +1,8 @@
 #!/bin/bash
-[ -z "$1" ] && { echo "Error: Directory argument required"; exit 1; }
+[ -z "$1" ] && { echo "Error: Directory argument required"; return 1; }
 dir="$1"
 
-pushd "$dir" || { echo "Error: Cannot change to directory $dir"; exit 1; }
+pushd "$dir" || { echo "Error: Cannot change to directory $dir"; return 1; }
 
 findTime()
 {
@@ -74,8 +74,8 @@ do
 	    echo "${eachTestDir}/jsons is not a dir"
 	fi
       done
-      popd || exit 1
+      popd || return 1
     fi
 done
 
-popd || exit 1
+popd || return 1

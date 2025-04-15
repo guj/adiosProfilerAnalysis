@@ -12,7 +12,7 @@
 if [ "$#" -lt 4 ]; then
     echo "Error: 4+ arguments required"
     echo "Usage: $0 <scriptHome> <dataDir> <jobID> <timeStep>"
-    exit 1
+    return 1
 fi
 
 scriptsHome=$1
@@ -24,16 +24,17 @@ aggType="ews"
 
 if  [ "$#" -eq 5 ]; then
     aggType=$5
+fi
 
 # Validate timeStep is a number
 if ! [[ "$timeStep" =~ ^[0-9]+$ ]]; then
     echo "Error: timeStep must be a non-negative integer, got '$timeStep'"
-    exit 1
+    return 1
 fi
 
 if [ ! -d "$dataDir/$jobID" ]; then
     echo "Error: Directory '$dataDir/$jobID' does not exist"
-    exit 1
+    return 1
 fi
 
 type1=default
@@ -50,7 +51,7 @@ path1=($(ls ${dataDir}/${jobID}/*${type1}_*/jsons/*/*${timeStep}.bp*${aggType}*)
 path2=($(ls ${dataDir}/${jobID}/*${type2}_*/jsons/*/*${timeStep}.bp*${aggType}*))
 path3=($(ls ${dataDir}/${jobID}/*${type3}_*/jsons/*/*${timeStep}.bp*${aggType}*))
 
-
+echo "source ${scriptsHome}/extract.sh all ${path1} ${path2} ${path3}"
 # Check if any paths were found
 if [ ${#path1[@]} -eq 0 ] && [ ${#path2[@]} -eq 0 ] && [ ${#path3[@]} -eq 0 ]; then
     echo "\nError: No matching files found in '$dataDir/$jobID' for timeStep $timeStep"
@@ -58,9 +59,8 @@ else
 
     #source adiosProfilerAnalysis/scripts/extract.sh all ${path1} ${path2} ${path3}
     source ${scriptsHome}/extract.sh all ${path1} ${path2} ${path3}
-    mkdir all_outs
-    mkdir all_outs/${jobID}
-    destination=all_outs/${jobID}/t${timeStep}
+    mkdir -p all_outs/${aggType}/${jobID}
+    destination=all_outs/${aggType}/${jobID}/t${timeStep}
     rm -rf  ${destination}
     mv outs ${destination}
 fi

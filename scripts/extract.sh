@@ -48,7 +48,7 @@ else
     echo "Num Files: $numFiles"
 
     if [[ $1 == "all" ]]; then
-	knownAttrs=( 'PP' 'PDW' 'ES' 'ES_AWD' 'ES_aggregate_info' 'FixedMetaInfoGather' 'transport_0.wbytes' )
+	knownAttrs=( 'PP' 'PDW' 'ES' 'ES_AWD' 'ES_aggregate_info' 'MetaInfoBcast' 'FixedMetaInfoGather' 'transport_0.wbytes' )
 	asyncAttrs=( 'BS_WaitOnAsync' 'DC_WaitOnAsync1' 'DC_WaitOnAsync2' )
     else
 	knownAttrs=("$1")

@@ -52,7 +52,7 @@ runStep2()
     
     for i in "${iterations[@]}"; do	
         #if ! source ./step2.sh "$jobID" "adiosProfilerAnalysis/scripts" "$extractedDir/$jobID" "$i"; then
-	if ! source ./step2.sh "$jobID" "${scripts_home}/scripts/" "$extractedDir/$jobID" "$i"; then
+	if ! source ./step2.sh "$jobID" "${scripts_home}/scripts/" "$extractedDir/$jobID" "$i" "$aggType"; then
             echo "Warning: step2.sh failed for iteration $i"
         fi
     done

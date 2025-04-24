@@ -27,9 +27,13 @@ if  [ "$#" -eq 5 ]; then
 fi
 
 # Validate timeStep is a number
+if [[ ${#timestep} == 0 ]]; then
+    echo "no time step"
+else
 if ! [[ "$timeStep" =~ ^[0-9]+$ ]]; then
     echo "Error: timeStep must be a non-negative integer, got '$timeStep'"
     return 1
+fi
 fi
 
 if [ ! -d "$dataDir/$jobID" ]; then

@@ -47,7 +47,7 @@ if __name__ == "__main__":
         print("Need Arguments for files" )
         sys.exit()
 
-    keywords = ['PP', 'PDW', 'ES', 'ES_AWD', 'ES_aggregate_info', 'FixedMetaInfoGather']
+    keywords = ['PP', 'PDW', 'ES', 'ES_AWD', 'ES_aggregate_info', 'MetaInfoBcast', 'FixedMetaInfoGather']
     summary = {}
     for key in keywords:
         summary[key]=[]

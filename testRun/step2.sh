@@ -6,8 +6,8 @@
 ################################################################
 
 # Validate input parameters
-if [ $# -ne 4 ]; then
-    echo "Usage: $0 <jobID> <scriptsHome> <extractedFilesBase> <timeStep>"
+if [ $# -ne 5 ]; then
+    echo "Usage: $0 <jobID> <scriptsHome> <extractedFilesBase> <timeStep> <aggType>"
     return 1
 fi
 
@@ -15,11 +15,14 @@ jobID="$1"
 scriptsHome="$2"
 timeStep="$4"
 extractedFilesLoc="$3/t${timeStep}"
+aggType=$5
 
 # Create directory structure
 mkdir -p "plots" || { echo "Error: Cannot create plots directory"; return 1; }
 mkdir -p "plots/${jobID}" || { echo "Error: Cannot create plots/${jobID}"; return 1; }
-currPlotDest="plots/${jobID}/t${timeStep}"
+mkdir -p "plots/${jobID}/${aggType}" || { echo "Error: Cannot create plots/${jobID}/${aggType}"; return 1; }
+
+currPlotDest="plots/${jobID}/${aggType}/t${timeStep}"
 mkdir -p "${currPlotDest}" || { echo "Error: Cannot create ${currPlotDest}"; return 1; }
 
 echo "==> Side by side comparison of PP PDW ES ES_AWD ES_aggregate_info FixedMetaInfoGather transport_0.wbytes"
@@ -74,23 +77,27 @@ compareTwo()
     python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=ES_AWD
     python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=ES_AWD logScale=x
     python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=ES_aggregate_info levelAxis=True logScale=x
-    
+
     python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=FixedMetaInfoGather  logScale=xy
     python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=FixedMetaInfoGather  logScale=y	
-    python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=FixedMetaInfoGather  
+    python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=FixedMetaInfoGather
+
+    python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=MetaInfoBcast
+
     python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=PDW
     python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=PP logScale=x
-    
+
     python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=transport_0.wbytes  whichKind=MB
-    
+
     if [[ $type1 == async* ]] ; then
 	python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=BS_WaitOnAsync    
 	python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=DC_WaitOnAsync1 logScale=x
 	python3 ${scriptsHome}/plotRanks.py ${type1} ${type2} --set dataDir=${extractedFilesLoc} plotPrefix=${currPlotDest}/${filePrefix} jsonAttr=DC_WaitOnAsync2 logScale=x
     fi
-		
-    echo "==> plot all the times spent on rank 0"    
+
+    echo "==> plot all the times spent on rank 0: python3 ${scriptsHome}/plotStack.py  ${type1} ${type2} --set dataDir=${extractedFilesLoc}  whichRank=0 plotPrefix=${currPlotDest}/${filePrefix}"
     python3 ${scriptsHome}/plotStack.py  ${type1} ${type2} --set dataDir=${extractedFilesLoc}  whichRank=0 plotPrefix=${currPlotDest}/${filePrefix}
+
     #fi
 }
 

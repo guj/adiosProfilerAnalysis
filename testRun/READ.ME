@@ -1,0 +1,20 @@
+sample usage:
+(BTD)
+  source automate.sh ../../data0 111 ../ tls
+  source automate.sh <data_dir> <which_jobid_in_data_dir> <where to find scripts> <what agg>
+
+(regular)
+  source ./step1.sh <script_dir>  <data_dir> <job_id> "" ews
+  e.g
+  source ./step1.sh ../scripts 3D 3391404 "" ews
+
+  then plot:
+  source ./step2.sh  3391404 ../scripts all_outs/ews/3391404 "" ews 
+
+
+
+### tracer extraction for ranks 0 to 10 ###
+source trace.sh 10 ../../frontier/data/3325185/f_3325185_flatten_64n/jsons/flatten/diag1_f_openpmd_000000.bp_ews_rank
+
+### produces gantt plot after trace.sh parsed everything in /tmp/
+python3 plotTraceByRankMulti.py  256 0 1 511
